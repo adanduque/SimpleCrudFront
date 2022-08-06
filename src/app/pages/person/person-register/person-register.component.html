@@ -1,0 +1,32 @@
+<h1>PERSON {{textForm}} </h1>
+<form class="example-container" [formGroup]="form" #frmProduct="ngForm" (submit)="operate()">
+
+    <div [hidden]="true">
+        <mat-form-field class="example-full-width">
+            <input matInput placeholder="ID" required formControlName="idProduct">
+        </mat-form-field>
+    </div>
+
+    <mat-form-field class="example-full-width">
+        <input matInput placeholder="firstname" minlength="3" required formControlName="firstname">
+        <small *ngIf="f['firstname'].errors?.['required'] && f['firstname'].touched" class="invalid">Is required</small>
+        <small *ngIf="f['lastname'].errors?.['minlength'] && f['lastname'].touched" class="invalid">Minlength is 3</small>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+        <input matInput placeholder="lastname" minlength="3" required formControlName="lastname">
+        <small *ngIf="f['lastname'].errors?.['required'] && f['lastname'].touched" class="invalid">Is required</small>
+        <small *ngIf="f['lastname'].errors?.['minlength'] && f['lastname'].touched" class="invalid">Minlength is 5</small>
+    </mat-form-field>
+
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="frmProduct.invalid">
+      <mat-icon>done</mat-icon>
+      <span>Done</span>
+  </button>
+
+    <button mat-raised-button color="accent" type="button" (click)="onNoClick()">
+      <mat-icon>cancel</mat-icon>
+      <span>Cancel</span>
+  </button>
+</form>
