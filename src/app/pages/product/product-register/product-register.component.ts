@@ -32,7 +32,8 @@ export class ProductRegisterComponent implements OnInit {
     this.form = new FormGroup({
       'idProduct' : new FormControl(0),
       'name' : new FormControl('', [Validators.required, Validators.minLength(3)]),
-      'brand' : new FormControl('', [Validators.required, Validators.minLength(5)]),
+      'brand' : new FormControl('', [Validators.required, Validators.minLength(4)]),
+      'price' : new FormControl(0, [Validators.required,Validators.min(1), Validators.pattern('^[0-9]+')]),
     });
 
    if(this.data){
@@ -57,6 +58,8 @@ export class ProductRegisterComponent implements OnInit {
           'idProduct' : new FormControl(data.idProduct),
           'name' : new FormControl(data.name, [Validators.required, Validators.minLength(3)]),
           'brand' : new FormControl(data.brand, [Validators.required, Validators.minLength(5)]),
+          'price' : new FormControl(data.price, [Validators.required, Validators.min(0)]),
+
         });
       });
     }
@@ -79,7 +82,7 @@ export class ProductRegisterComponent implements OnInit {
     product.idProduct = this.form.value['idProduct'];
     product.name = this.form.value['name'];
     product.brand = this.form.value['brand'];
-
+    product.price = this.form.value['price'];
 
     if (this.isEdit) {
 

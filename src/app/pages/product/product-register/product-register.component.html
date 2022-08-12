@@ -16,9 +16,16 @@
     <mat-form-field class="example-full-width">
         <input matInput placeholder="brand" minlength="3" required formControlName="brand">
         <small *ngIf="f['brand'].errors?.['required'] && f['brand'].touched" class="invalid">Is required</small>
-        <small *ngIf="f['brand'].errors?.['minlength'] && f['brand'].touched" class="invalid">Minlength is 5</small>
+        <small *ngIf="f['brand'].errors?.['minlength'] && f['brand'].touched" class="invalid">Minlength is 4</small>
     </mat-form-field>
 
+    <mat-form-field class="example-full-width">
+        <input matInput placeholder="price" required formControlName="price">
+        <small *ngIf="f['price'].errors?.['required'] && f['price'].touched" class="invalid">Is required</small>
+        <small *ngIf="f['price'].errors?.['pattern'] && f['price'].touched" class="invalid">Must enter only whole numbers</small>
+        <small *ngIf="f['price'].errors?.['min'] && f['price'].touched" class="invalid">Must enter numbers greater than 0</small>
+
+    </mat-form-field>
 
     <button mat-raised-button color="primary" type="submit" [disabled]="frmProduct.invalid">
       <mat-icon>done</mat-icon>

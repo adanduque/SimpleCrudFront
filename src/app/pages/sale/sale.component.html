@@ -1,0 +1,179 @@
+<mat-tab-group>
+    <mat-tab label="Sale Register">
+        <div class="cont-sale">
+            <h1>SALE REGISTER</h1>
+            <hr>
+            <form class="example-container" [formGroup]="form" #frmSale="ngForm" (submit)="operate()">
+
+                <div [hidden]="true">
+                    <mat-form-field class="example-full-width">
+                        <input matInput placeholder="ID" required formControlName="idSale">
+                    </mat-form-field>
+                </div>
+
+                <mat-form-field>
+                    <mat-label>Select person</mat-label>
+                    <mat-select formControlName="idPerson" name="idPerson" required>
+                        <mat-option [value]="person.idPerson" *ngFor="let person of persons">
+                            {{ person.firstname +' '+ person.lastname}}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="f['idPerson'].errors?.['required'] && f['idPerson'].touched" class="invalid">Is required</mat-error>
+                    <mat-error *ngIf="f['idPerson'].errors?.['min'] && f['idPerson'].touched" class="invalid">Select Person</mat-error>
+
+                </mat-form-field>
+
+                <h2>DETAIL</h2>
+                <mat-form-field>
+                    <mat-label>Select product</mat-label>
+                    <mat-select formControlName="productIdDetail" name="product_id" required>
+                        <mat-option [value]="product.idProduct" *ngFor="let product of products">
+                            {{ product.name }}
+                        </mat-option>
+                    </mat-select>
+
+                    <!--           <small *ngIf="fProduct['idProduct'].errors?.['required'] && fProduct['idProduct'].touched" class="invalid">Is required</small>
+   --></mat-form-field>
+                <mat-form-field class="m-left">
+                    <mat-label>quantity</mat-label>
+                    <input pattern="^[0-9]*" formControlName="quantityDetail" matInput placeholder="quantity" type="number">
+                    <mat-error *ngIf="f['quantityDetail'].errors?.['pattern'] && f['quantityDetail'].touched" class="invalid">Enter correct information</mat-error>
+                </mat-form-field>
+                <button mat-raised-button color="primary" type="button" (click)="addDetail()" class="m-left">Add Detail</button>
+                <div style="display: flex;justify-content: space-between;">
+
+                    <h2>DETAIL LIST</h2>
+                    <div class="m-right">
+                        <h1>TOTAL : <span style="font-weight: bold;font-size: larger;">{{getTotal() | number: '2.1-2' }}</span></h1>
+                    </div>
+                </div>
+                <hr/>
+                <table *ngIf="details.length>0">
+                    <thead>
+                        <tr>
+                            <th>N</th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Price U</th>
+                            <th>Sub Total</th>
+                        </tr>
+                    </thead>
+                    <tbody formArrayName="details">
+                        <tr *ngFor="let control of details.controls; let i = index" [formGroupName]="i">
+                            <td> {{ i + 1 }} </td>
+                            <td>
+                                <mat-form-field class="m-left" appearance="fill">
+                                    <mat-label>Product</mat-label>
+                                    <input matInput type="text" formControlName="product">
+                                </mat-form-field>
+                            </td>
+                            <td>
+                                <mat-form-field class="m-left" appearance="fill">
+                                    <mat-label>Quantity</mat-label>
+                                    <input (keyup)="writeSubTotal(i)" matInput type="number" formControlName="quantity">
+                                    <mat-error *ngIf="details.controls[i]['controls']['quantity'].errors?.['required'] && details.controls[i]['controls']['quantity'].touched" class="invalid">Is required</mat-error>
+                                    <mat-error *ngIf="details.controls[i]['controls']['quantity'].errors?.['pattern'] && details.controls[i]['controls']['quantity'].touched" class="invalid">Must enter only whole numbers</mat-error>
+                                    <mat-error *ngIf="details.controls[i]['controls']['quantity'].errors?.['min'] && details.controls[i]['controls']['quantity'].touched" class="invalid">Must enter numbers greater than 0</mat-error>
+
+                                </mat-form-field>
+
+                            </td>
+                            <td>
+                                <mat-form-field class="m-left" appearance="fill">
+                                    <mat-label>Price Und</mat-label>
+                                    <input (keyup)="writeSubTotal(i)" matInput type="text" formControlName="price">
+                                    <mat-error *ngIf="details.controls[i]['controls']['price'].errors?.['required'] && details.controls[i]['controls']['price'].touched" class="invalid">Is required</mat-error>
+                                    <mat-error *ngIf="details.controls[i]['controls']['price'].errors?.['pattern'] && details.controls[i]['controls']['price'].touched" class="invalid">Must enter correct format, 2 decimals</mat-error>
+                                </mat-form-field>
+                            </td>
+                            <td>
+                                <mat-form-field class="m-left" appearance="fill">
+                                    <mat-label>Sub Total</mat-label>
+                                    <input matInput type="text" formControlName="subTotal">
+                                </mat-form-field>
+                            </td>
+                            <td>
+
+                                <button class="m-left" *ngIf="!getDisabled(i)" mat-raised-button color="warn" type="button" (click)="editDetail(i)">Edit</button>
+                                <button class="m-left" *ngIf="getDisabled(i)" [id]="'btnEdit'+i" mat-raised-button color="basic" type="button" (click)="saveDetail(i)">Save</button>
+
+
+                                <button class="m-left" mat-raised-button color="accent" type="button" (click)="deleteDetail(i)">
+                            Delete
+                      </button>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+
+                <button class="m-left m-top" mat-raised-button color="primary" type="submit" [disabled]="frmSale.invalid ||  details.length<=0">
+          <span>Done</span>
+        </button>
+
+                <button class="m-left" mat-raised-button color="accent" type="button" (click)="newSale()">
+        <span>Cancel</span>
+    </button>
+            </form>
+
+
+
+        </div>
+
+    </mat-tab>
+    <mat-tab label="Sale List">
+        <div class="cont-sale">
+            <h1>SALE LIST</h1>
+            <hr>
+            <mat-form-field appearance="standard">
+                <mat-label>Sale Search</mat-label>
+                <input matInput (keyup)="applyFilter($event)" placeholder="Product Search" #input>
+            </mat-form-field>
+
+            <div class="mat-elevation-z8">
+                <table mat-table [dataSource]="dataSource" matSort>
+
+                    <!-- ID Column -->
+                    <ng-container matColumnDef="id">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+                        <!-- [style.display]="'none'" -->
+                        <td mat-cell *matCellDef="let row"> {{row.idSale}} </td>
+                        <!-- [style.display]="'none'" -->
+                    </ng-container>
+
+                    <!-- firstName Column -->
+                    <ng-container matColumnDef="person">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Person </th>
+                        <td mat-cell *matCellDef="let row"> {{row.person.firstname + ' ' + row.person.lastname}} </td>
+                    </ng-container>
+
+                    <!-- lastName Column -->
+                    <ng-container matColumnDef="date">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
+                        <td mat-cell *matCellDef="let row"> {{row.datetime | date: 'dd/MM/yyyy'}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="total">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Total</th>
+                        <td mat-cell *matCellDef="let row"> {{row.total}} </td>
+                    </ng-container>
+
+
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                    <!-- Row shown when there is no matching data. -->
+                    <tr class="mat-row" *matNoDataRow>
+                        <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+                    </tr>
+                </table>
+
+                <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
+
+
+            </div>
+        </div>
+    </mat-tab>
+</mat-tab-group>

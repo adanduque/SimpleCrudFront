@@ -19,7 +19,7 @@ import { MatPaginator } from '@angular/material/paginator';
 })
 export class ProductComponent  implements OnInit {
 
-  displayedColumns: string[] = ['id', 'name', 'brand', 'actions'];
+  displayedColumns: string[] = ['id', 'name', 'brand', 'price','actions'];
   dataSource: MatTableDataSource<Product>;
   @ViewChild(MatPaginator) paginator: MatPaginator
   @ViewChild(MatSort) sort: MatSort;
